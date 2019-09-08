@@ -28,11 +28,13 @@ admin.initializeApp({
 });
 
 // Spotify OAuth 2 setup
+const spotify = require('./spotify');
+
 // TODO: Configure the `spotify.client_id` and `spotify.client_secret` Google Cloud environment variables.
 const SpotifyWebApi = require('spotify-web-api-node');
 const Spotify = new SpotifyWebApi({
-  clientId: functions.config().spotify.client_id,
-  clientSecret: functions.config().spotify.client_secret,
+  clientId: '1a313450afc74bd4a4ed6c83b1561781',
+  clientSecret: '25f9d28005f84d88a593f9c586b2ef89',
   redirectUri: `https://${process.env.GCLOUD_PROJECT}.firebaseapp.com/popup.html`,
 });
 
