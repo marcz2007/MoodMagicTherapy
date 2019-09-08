@@ -38,7 +38,7 @@ class Credentials {
 
 }
 
-module.exports = admin.firestore().collection('credentials').doc('6mGJur0mZcPGNetLKYql').get().then((snapshot) => {
+module.exports = admin.firestore().collection('credentials').doc('marc.jwatts@gmail.com').get().then((snapshot) => {
     let client_id = JSON.stringify(snapshot.data().client_id);
     let client_secret = JSON.stringify(snapshot.data().client_secret);
     // console.log(JSON.stringify(doc.data().client_id));
