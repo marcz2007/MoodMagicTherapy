@@ -30,14 +30,8 @@ admin.initializeApp({
 // Spotify OAuth 2 setup
 const spotify = require('./spotify');
 
-// TODO: Configure the `spotify.client_id` and `spotify.client_secret` Google Cloud environment variables.
-const SpotifyWebApi = require('spotify-web-api-node');
-// const Spotify = require('functions/spotify.js');
-const Spotify = new SpotifyWebApi({
-  clientId: '1a313450afc74bd4a4ed6c83b1561781',
-  clientSecret: '25f9d28005f84d88a593f9c586b2ef89',
-  redirectUri: `https://${process.env.GCLOUD_PROJECT}.firebaseapp.com/popup.html`,
-});
+
+
 
 // Scopes to request.
 const OAUTH_SCOPES = ['user-read-email'];
@@ -51,11 +45,40 @@ exports.redirect = functions.https.onRequest((req, res) => {
     const state = req.cookies.state || crypto.randomBytes(20).toString('hex');
     console.log('Setting verification state:', state);
     res.cookie('state', state.toString(), {maxAge: 3600000, secure: true, httpOnly: true});
+    spotify.then(Spotify =>{
+      console.log('This is the client id used in redirect ' + Spotify.getClientId());
+      console.log('This is the client secret used in redirect ' + Spotify.getClientSecret());
+      const authorizeURL = Spotify.createAuthorizeURL(OAUTH_SCOPES, state.toString());
+      res.redirect(authorizeURL);
+    })
 
-    const authorizeURL = Spotify.createAuthorizeURL(OAUTH_SCOPES, state.toString());
-    res.redirect(authorizeURL);
   });
 });
+
+function removeWhiteSpaces(code){
+
+    const regex = /[(\w)]+/g;
+    let n;
+
+    while ((n = regex.exec(code)) !== null) {
+      // This is necessary to avoid infinite loops with zero-width matches
+      if (n.index === regex.lastIndex) {
+        regex.lastIndex++;
+      }
+
+      // The result can be accessed through the `n`-variable.
+      n.forEach((match, groupIndex) => {
+
+        console.log(`Found match, group ${groupIndex}: ${match}`);
+
+      });
+      console.log(`Found n,  ${n}`);
+      return n;
+    }
+
+
+
+}
 
 /**
  * Exchanges a given Spotify auth code passed in the 'code' URL query parameter for a Firebase auth token.
@@ -65,6 +88,7 @@ exports.redirect = functions.https.onRequest((req, res) => {
  */
 exports.token = functions.https.onRequest((req, res) => {
   try {
+
     cookieParser()(req, res, () => {
       console.log('Received verification state:', req.cookies.state);
       console.log('Received state:', req.query.state);
@@ -74,31 +98,44 @@ exports.token = functions.https.onRequest((req, res) => {
         throw new Error('State validation failed');
       }
       console.log('Received auth code:', req.query.code);
-      Spotify.authorizationCodeGrant(req.query.code, (error, data) => {
-        if (error) {
-          throw error;
-        }
-        console.log('Received Access Token:', data.body['access_token']);
-        Spotify.setAccessToken(data.body['access_token']);
+      let code = removeWhiteSpaces(req.query.code);
 
-        Spotify.getMe(async (error, userResults) => {
+      const spotify = require('./spotify');
+      spotify.then(Spotify =>{
+        console.log('This is the access token: ' + Spotify.getAccessToken());
+        console.log('This is the client id: ' + Spotify.getClientId());
+        console.log('This is the client secret: ' + Spotify.getClientSecret());
+        console.log('This is the auth code: ' + code);
+        Spotify.authorizationCodeGrant(code, (error, data) => {
           if (error) {
+            console.log('foo');
             throw error;
           }
-          console.log('Auth code exchange result received:', userResults);
-          // We have a Spotify access token and the user identity now.
-          const accessToken = data.body['access_token'];
-          const spotifyUserID = userResults.body['id'];
-          const profilePic = userResults.body['images'][0]['url'];
-          const userName = userResults.body['display_name'];
-          const email = userResults.body['email'];
+          console.log('Received Access Token:', data.body['access_token']);
+          Spotify.setAccessToken(data.body['access_token']);
 
-          // Create a Firebase account and get the Custom Auth Token.
-          const firebaseToken = await createFirebaseAccount(spotifyUserID, userName, profilePic, email, accessToken);
-          // Serve an HTML page that signs the user in and updates the user profile.
-          res.jsonp({token: firebaseToken});
+          Spotify.getMe(async (error, userResults) => {
+            if (error) {
+              console.log('bar');
+              throw error;
+            }
+            console.log('Auth code exchange result received:', userResults);
+            // We have a Spotify access token and the user identity now.
+            const accessToken = data.body['access_token'];
+            const spotifyUserID = userResults.body['id'];
+            const profilePic = userResults.body['images'][0]['url'];
+            const userName = userResults.body['display_name'];
+            const email = userResults.body['email'];
+
+            // Create a Firebase account and get the Custom Auth Token.
+            const firebaseToken = await createFirebaseAccount(spotifyUserID, userName, profilePic, email, accessToken);
+            // Serve an HTML page that signs the user in and updates the user profile.
+            res.jsonp({token: firebaseToken});
+          });
         });
-      });
+      }).catch(err => {
+        console.log('Spotify auth failed!', err);
+      })
     });
   } catch (error) {
     return res.jsonp({error: error.toString});

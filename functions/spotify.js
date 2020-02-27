@@ -35,25 +35,29 @@ class Credentials {
 
     }
 
+// 1a313450afc74bd4a4ed6c83b1561781
+    // 25f9d28005f84d88a593f9c586b2ef89
+    // 1a313450afc74bd4a4ed6c83b1561781:25f9d28005f84d88a593f9c586b2ef89
+    // MWEzMTM0NTBhZmM3NGJkNGE0ZWQ2YzgzYjE1NjE3ODE6MjVmOWQyODAwNWY4NGQ4OGE1OTNmOWM1ODZiMmVmODk=
 
 }
 
 module.exports = admin.firestore().collection('credentials').doc('marc.jwatts@gmail.com').get().then((snapshot) => {
-    let client_id = JSON.stringify(snapshot.data().client_id);
-    let client_secret = JSON.stringify(snapshot.data().client_secret);
+    let client_id = (snapshot.data().client_id);
+    let client_secret = (snapshot.data().client_secret);
     // console.log(JSON.stringify(doc.data().client_id));
     // Credentials.client_id = JSON.stringify(doc.data().client_id);
     // console.log(JSON.stringify(doc.data().client_secret));
     // Credentials.client_secret = JSON.stringify(doc.data().client_secret);
 
 
-    const credentials = new Credentials(regexIdAndSecret(client_id), regexIdAndSecret(client_secret));
+    const credentials = new Credentials(client_id,client_secret);
 
 
     const Spotify = new SpotifyWebApi({
-        client_id: credentials.client_id,
-        client_secret: credentials.client_secret,
-        redirectUri: `https://${process.env.GCLOUD_PROJECT}.firebaseapp.com/popup.html`
+        clientId: credentials.client_id,
+        clientSecret: credentials.client_secret,
+        redirectUri: `https://moodmagictherapy2-rhjhig.firebaseapp.com/popup.html`
     });
     Spotify.setClientId(credentials.client_id);
     Spotify.setClientSecret(credentials.client_secret);
