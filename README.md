@@ -7,3 +7,5 @@ This section outlines how to access Mood Magic Therapy. Despite the music playin
 
 To launch the application, simply speak or type ‘Talk to Mood Magic Therapy’ into a Google Assistant device.  Or, to find the application page, users need only search for ‘Mood Magic Therapy’ on the Google Assistant https://assistant.google.com/explore, as shown in Appendix G. Once found (https://assistant.google.com/services/a/uid/00000096e92c62db), users can click ‘send to device’. The app will launch and the user will be guided through the conversation.
 
+![Image description](https://github.com/marcz2007/MoodMagicTherapy/blob/master/MMT.png)
+
