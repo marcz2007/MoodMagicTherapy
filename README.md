@@ -13,8 +13,7 @@ To launch the application, simply speak or type ‘Talk to Mood Magic Therapy’
 # Code Structure
 
 To create the database of pre-tone-analysed songs, ‘SQL’, IBM’s ‘Watson
-Tone Analyser’ and Google’s, ‘NoSQL’ database, ‘Firebase’, was used. To create the userto-
-app conversational experience, ‘Google Assistant’ entwined with ‘Dialogflow’ (formerly,
+Tone Analyser’ and Google’s, ‘NoSQL’ database, ‘Firebase’, was used. To create the user-to-app conversational experience, ‘Google Assistant’ entwined with ‘Dialogflow’ (formerly,
 ‘API.ai’), was utilised. Finally, to allow for audio analysis and the playing of music via the
 application, ‘Spotify’s’ API service was used. These were all connected together via a single
 ‘Webhook’ – code that acts as an API endpoint, which in this project, communicates first
@@ -28,3 +27,5 @@ emotion used in the song and by providing the ability to make API requests using
 - The folder ‘Google Assistant App’ contains the full application code. Navigate through to functions and then to index.js to see the entirety of the Webhook; This is the code which brings together the Google Assistant application with the other . A .zip file containing all the Dialogflow intents is also held within the
 ‘Google Assistant App’ folder. 
 - The folder ‘DBTestApp/DatabaseAPiApp/npm-global’ contains the code used to create and manipulate the SQL databases and request Watson tone analysis on song lyrics.
+
+For more information, please feel free to browse the project report I wrote which covers the project in much greater detail (MScProjectReport.pdf).
