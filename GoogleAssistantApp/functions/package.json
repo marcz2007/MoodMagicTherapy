@@ -6,8 +6,8 @@
     "cookie-parser": "^1.4.3",
     "crypto": "0.0.3",
     "dialogflow-fulfillment": "0.4.1",
-    "firebase-admin": "7.1.1",
-    "firebase-functions": "^3.2.0",
+    "firebase-admin": "11.4.1",
+    "firebase-functions": "^3.24.1",
     "request": "^2.88.0",
     "sentiword": "0.0.1",
     "spotify-web-api-node": "^2.3.6"
